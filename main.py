@@ -12,6 +12,62 @@ SETUP_SCRIPT = (
     "python3 -m pip install --quiet pandas || pip3 install --quiet pandas || true"
 )
 
+HISTORICAL_PRIMER = """
+## Historical primer (treat as approved background; cite it as context, not as data)
+
+**Background.** Edward the Confessor died childless in January 1066. Harold Godwinson
+(Earl of Wessex) was crowned Harold II; William, Duke of Normandy, claimed Edward had
+promised him the throne, invaded, and killed Harold at Hastings on 14 October 1066. He
+was crowned king in Westminster on Christmas Day 1066. William framed his rule as lawful
+succession, so by 1086 almost all Anglo-Saxon magnates had been dispossessed in favour of
+Norman and Breton followers and reformed continental monasteries: about 200
+tenants-in-chief held England directly of the crown, with the royal demesne the largest
+block. A few major Englishmen survived; native lords mostly persisted only as
+subtenants.
+
+**The survey.** At Gloucester at Christmas 1085 William ordered a description of his
+kingdom; commissioners took the survey in 1086. Its aims were fiscal (the geld base),
+tenurial (who held what, of whom), and legal (settling disputed claims; the 1086
+Salisbury assembly, where major landholders swore direct allegiance to the king, is the
+commonly cited context). It earned the name "Domesday" because its judgments were
+appealable to no other book. Little Domesday (Norfolk, Suffolk, Essex) is the fuller
+original draft; Great Domesday is the condensed fair copy for the rest. The full survey
+covers roughly 13,400 places; this CSV is a slice of the manors of selected
+tenants-in-chief.
+
+**The Harrying of the North.** After northern rebellions in 1069-70 (with Danish
+support), William's forces devastated Yorkshire and neighbouring counties. Chroniclers
+describe famine and depopulation; modern scholars debate the scale. In Domesday this
+appears as manors "waste" (wasta) with collapsed or missing values, concentrated in
+Yorkshire, Lincolnshire, Cheshire and the north - matching Waste_Note in this file.
+
+**Money.** Values are annual income to the lord, in pounds sterling: 1 pound = 20
+shillings (s.), 1 shilling = 12 pence (d.). Value_1066 is the T.R.E. value (tempore
+regis Edwardi, "in the time of King Edward", the 1066 baseline). Value_When_Acquired is
+what the 1086 holder paid/worth at his acquisition (often the 1070s-80s), useful for
+dating the impact of the Conquest on each estate. Value_1086 is the 1086 assessment.
+
+**Tenure.** Tenant_in_Chief_1086 held directly of the king; Lord_1086 is the actual
+holder (often the tenant-in-chief himself, sometimes a subtenant); Overlord_1066 and
+Lord_1066 give the pre-Conquest holder. A hundred (wapentake in the Danelaw, rape in
+Sussex, lathes in Kent) was the administrative subdivision above the vill; Hundred in
+this file is that unit.
+
+**Glossary.** Manor (manerium): the estate unit surveyed, a lord's demesne plus tenants'
+land. Hide/virgate/bovate: assessment units (hide ~120 acres nominal); carucate/ploughland:
+the Danelaw equivalent, land for one plough team. Plough team: 8 oxen. Villager (villanus):
+the standard unfree-but-secure tenant. Bordar/smallholder: held a few acres. Cottager:
+less still. Freeman (liber homo; sokemen in eastern counties): pre-Conquest free
+peasantry, declining after the Conquest. Slave (servus; ancilla female): unfree labour,
+largely disappeared within a generation of 1086. Geld: the land tax, assessed in hides or
+carucates. Waste (wasta): recorded as devastated, often valueless.
+
+**Reading the resource columns.** Woodland measured in "pigs" is swine-render - how many
+pigs the wood could fatten (pannage), a carrying-capacity measure, NOT a count of pigs
+present; never sum it with livestock columns. Meadow/pasture in acres are land areas.
+Mills, fisheries, salthouses and churches are recorded as counts with separate values.
+"""
+
 INSTRUCTIONS = """
 You are Domesday Analyst, a conversational data analyst. The user chats with you in plain
 language about CSV datasets; you answer with real numbers computed from the data, never
@@ -85,7 +141,7 @@ SETUP_SCRIPT_TIMEOUT = 300
 agent = agents.Agent(
     model="mistral-large-4",
     name="domesday-analyst",
-    instructions=INSTRUCTIONS,
+    instructions=INSTRUCTIONS + HISTORICAL_PRIMER,
     environment=agents.MistralSandbox(
         network=agents.Network.all(),
         setup_script=SETUP_SCRIPT,
